@@ -16,17 +16,17 @@ class BookController extends AbstractRestfulController
     protected $entityManager;
 
     public function __construct(EntityManager $entityManager)
-	{
-		$this->entityManager = $entityManager;
-	}
+    {
+        $this->entityManager = $entityManager;
+    }
 
     public function getList()
     {
         $books = $this->entityManager->getRepository(Book::class)->findAll();
-		$data = [];
+        $data = [];
 
         foreach($books as $book) {
-        	$data[] = $book->toArray();
+            $data[] = $book->toArray();
     	}
 
         return new JsonModel([
@@ -38,7 +38,7 @@ class BookController extends AbstractRestfulController
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
 
-		return new JsonModel([
+        return new JsonModel([
             'book' => $book->toArray(),
         ]);
     }
@@ -53,11 +53,11 @@ class BookController extends AbstractRestfulController
         $form->setData($request->getPost());
 
         if ($form->isValid()) {
-			$book->setTitle($data['title']);
-			$book->setPrice($data['price']);
-			$this->entityManager->persist($book);
-			$this->entityManager->flush();
-		}
+            $book->setTitle($data['title']);
+            $book->setPrice($data['price']);
+            $this->entityManager->persist($book);
+            $this->entityManager->flush();
+        }
 
         return new JsonModel([
             'book' => $book->toArray(),
@@ -68,7 +68,7 @@ class BookController extends AbstractRestfulController
     public function update($id, $data)
     {
         $form  = new BookForm();
-		$request = $this->getRequest();
+        $request = $this->getRequest();
         $inputfilter = new FormBookFilter();
         $form->setInputFilter($inputfilter);
         $book = $this->entityManager->getRepository(Book::class)->findOneBy(['id' => $id]);
@@ -76,24 +76,24 @@ class BookController extends AbstractRestfulController
         $form->setData($data);
 
         if ($form->isValid()) {
-			$this->entityManager->persist($book);
-			$this->entityManager->flush();
-		}
+            $this->entityManager->persist($book);
+            $this->entityManager->flush();
+        }
 
-		return new JsonModel([
-			'book' => $book->toArray(),
+        return new JsonModel([
+            'book' => $book->toArray(),
             'message' => 'Book update successful!'
-		]);
+        ]);
     }
 
     public function delete($id)
     {
         $book = $this->entityManager->getRepository(Book::class)->findOneBy(['id' => $id]);
 
-		if ($book) {
-			$this->entityManager->remove($book);
-			$this->entityManager->flush();
-		}
+        if ($book) {
+            $this->entityManager->remove($book);
+            $this->entityManager->flush();
+        }
 
         return new JsonModel([
             'message' => 'Book deleted successful!'
