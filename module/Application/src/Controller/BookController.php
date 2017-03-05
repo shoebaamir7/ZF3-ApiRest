@@ -23,6 +23,11 @@ class BookController extends AbstractRestfulController
     public function getList()
     {
         $books = $this->entityManager->getRepository(Book::class)->findAll();
+
+        if (!$books) {
+            return new JsonModel(['message' => 'Books not found']);
+        }
+
         $data = [];
 
         foreach($books as $book) {
@@ -37,6 +42,10 @@ class BookController extends AbstractRestfulController
     public function get($id)
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
+
+        if (!$book) {
+            return new JsonModel(['message' => 'Id not found']);
+        }
 
         return new JsonModel([
             'book' => $book->toArray(),
@@ -67,6 +76,10 @@ class BookController extends AbstractRestfulController
 
     public function update($id, $data)
     {
+        if (!$id) {
+            return new JsonModel(['message' => 'Id not found']);
+        }
+
         $form  = new BookForm();
         $request = $this->getRequest();
         $inputfilter = new FormBookFilter();
@@ -88,6 +101,10 @@ class BookController extends AbstractRestfulController
 
     public function delete($id)
     {
+        if (!$id) {
+            return new JsonModel(['message' => 'Id not found']);
+        }
+
         $book = $this->entityManager->getRepository(Book::class)->findOneBy(['id' => $id]);
 
         if ($book) {
